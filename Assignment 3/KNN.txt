@@ -1,0 +1,78 @@
+from sklearn.datasets import load_wine
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
+wine = load_wine()                                    								# 1--> Load Wine Dataset
+type(wine)
+
+x = wine.data
+y = wine.target
+
+x_train, x_test, y_train, y_test=train_test_split(x, y, test_size = 0.3, random_state = 4)          		# 2--> Train_Test_Split                        
+
+acc={}
+for i in range(3,31):
+  knn = KNeighborsClassifier(n_neighbors = i )									# 3--> Object Create
+  knn.fit(x_train, y_train)				# data gula k level gular sathe fit kora                  4--> Training
+  y_pred = knn.predict(x_test)				# 30% data diya 70% trained datar opor prediction         5--> Testing
+  acc[i] = metrics.accuracy_score(y_test, y_pred)			 					# 6--> Accuracy Finding
+
+key = list(acc.keys())
+val = list(acc.values())
+pos = val.index(max(val))
+print(key[pos])
+
+
+###############################################################################################################################
+
+from sklearn.datasets import load_wine
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
+wine = load_wine()                                    # 1--> Load Wine Dataset
+type(wine)
+# print(wine.data.shape)
+# print(wine.target)
+# print(wine.feature_names)
+x = wine.data
+y = wine.target
+# print(x)
+# print(y)
+x_train, x_test, y_train, y_test=train_test_split(x, y, test_size = 0.3, random_state = 4)          # 2--> Train_Test_Split
+knn = KNeighborsClassifier(n_neighbors=30)              # 3--> Object Create
+# print(knn)
+# knn.fit(x,y)
+# y_pred=knn.predict(x)
+# print(metrics.accuracy_score(y,y_pred))
+
+# print(x_train)
+# print("*"*100)
+# print(x_test)
+# print("*"*100)
+# print(y_train)
+# print("*"*100)
+# print(y_test)
+# print(x_train.shape)
+# print(x_test.shape)
+# print(y_train.shape)
+# print(y_test.shape)
+knn.fit(x_train, y_train)         # data gula k level gular sathe fit kora                  4--> Training
+y_pred = knn.predict(x_test)      # 30% data diya 70% trained datar opor prediction         5--> Testing
+#print(metrics.accuracy_score(y_test, y_pred))                                             # 6--> Accuracy Finding
+
+acc={}
+for i in range(3,31):
+  knn = KNeighborsClassifier(n_neighbors = i )
+  knn.fit(x_train, y_train)
+  y_pred = knn.predict(x_test)
+  acc[i] = metrics.accuracy_score(y_test, y_pred)
+  # print(metrics.accuracy_score(y_test, y_pred))
+
+# print(acc)
+# for i in acc:
+#   print(f"{i}-->{acc[i]}")
+
+key = list(acc.keys())
+val = list(acc.values())
+pos = val.index(max(val))
+print(key[pos])

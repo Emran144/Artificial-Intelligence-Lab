@@ -1,0 +1,57 @@
+https://colab.research.google.com/drive/189wClr76AYdArog_BkZ1lATltdGWGq4u?usp=sharing
+
+
+#Md AL Emran Hossain
+#011181144
+
+list=[]
+curr_list=[]
+n=input()
+n=int(n)
+list=input().split()
+for i in range(n)[0:]:
+    list[i]=int(list[i])
+    #print(list[i])
+#print("Input Done")
+
+def cost(list):
+    curr_cost = 0
+
+    for i in range(n):
+        for j in range(n)[i + 1:]:
+            #print(f"{list[i]} >>>> {list[j]}")
+            if list[i]>list[j]:
+                #print(f"{list[i]} >>>> {list[j]}")
+                curr_cost=curr_cost+1
+
+    return curr_cost
+
+
+curr_cost=n+1
+j=list[0]
+#print(j)
+curr_cost=cost(list)
+#print(f"Cost of list {curr_cost}")
+list1 = list.copy()
+
+while curr_cost!=0:
+    for i in range(n):
+        for j in range(n)[i+1:]:
+            #print(f"{list[i]}-->{list[j]}")
+            #print(list)
+            temp = list1[i]
+            list1[i] = list1[j]
+            list1[j] = temp
+            new_cost=cost(list1)
+            if new_cost<curr_cost:
+                curr_cost=new_cost
+                curr_list=list1.copy()
+            #print(f"{list1} er cost :{new_cost}")
+            list1=list.copy()
+    # print(f"Final {curr_list} er cost :{curr_cost}")
+    list=curr_list.copy()
+
+#print(f"Sorted List :\n{curr_list}")
+print("Sorted List: ")
+for i in range(n):
+    print(f"{curr_list[i]} ",end='')

@@ -1,0 +1,97 @@
+Google Colab Link--> https://colab.research.google.com/drive/1shkhQcT9FrAPjnbsetEM_y6n4BXy8pqS?usp=sharing
+
+_____________________________________________________________________________________________________________________________________
+
+
+# Md Al Emran Hossain
+# ID-011181144
+
+from sklearn import datasets
+import numpy as np
+import random
+import math
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+iris = datasets.load_iris()
+X = iris.data[:, :2]
+y = (iris.target != 0) * 1
+
+x_train, x_test, y_train, y_test=train_test_split(X, y, test_size = 0.3, random_state = 4)
+
+list_train=[]
+
+for i in range(len(x_train)):
+  k = np.insert(x_train[i],0,1)
+  list_train.append(k)
+  #print(list_train[i])
+
+table = {}
+
+lr = [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001]
+
+for LR in lr:
+  theta = [random.random(), random.random(), random.random()]
+#print(theta)
+  train_loss=[]
+  
+  for i in range(1000):
+    #print(i)
+    TJ=0
+    k=0
+
+    for j in list_train:
+      #print(j[0])
+      Z = np.dot(j, theta)
+      # print(Z)
+      h = 1 / (1 + math.exp(-Z))
+      #print(f"{h}-->{y_train[k]}")
+      J = - y_train[k] * np.log(h) - (1 - y_train[k]) * np.log(1-h) 
+      TJ = TJ+J
+      #print(J)
+      dv = j * (h - y_train[k])
+      # lr = 0.1
+      # print(LR)
+      theta = theta - dv * LR
+      k = k + 1
+
+    TJ = TJ / len(x_train)
+    # print(TJ)
+    train_loss.append(TJ)
+  # print(theta)
+  # print(train_loss)
+  plt.plot(train_loss)
+  plt.xlabel("Iteration")
+  plt.ylabel("Train_Loss")
+  plt.show()
+
+  list_test = []
+  for i in range(len(x_test)):
+    k = np.insert(x_test[i], 0, 1)
+    list_test.append(k)
+    # print(list_test[i])
+
+  correct = 0
+  k = 0
+  for i in list_test:
+    # print(i)
+    z = np.dot(i, theta)
+    h = 1 / (1 + math.exp(-z))
+    if h >= 0.5:
+      h = 1
+    else:
+      h = 0
+    if h == y_test[k]:
+      correct = correct + 1
+    k = k + 1
+  # print(correct)
+  val_acc = (correct / len(y_test)) * 100
+  val_acc = round(val_acc, 2)
+  table[LR]=val_acc
+  print(f"           L.R: {LR} ---> Accuracy: {val_acc}")
+  # print(val_acc)
+
+print("\n\n")
+print("{:<20}{:<15}".format("Learning Rate", "Accuracy"))
+for LR, accuracy in table.items():
+  print("{:<3}{:<18}{:<5}%".format(" ", LR, accuracy))

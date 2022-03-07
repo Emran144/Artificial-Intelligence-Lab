@@ -1,0 +1,68 @@
+# Google Colab Link--> https://colab.research.google.com/drive/1XICVChfnmmlj9kmeJpI5NQyKsaWr0gfI?usp=sharing
+
+# Bonus  #######################################################################################################################
+
+
+
+from sklearn.datasets import load_wine
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
+wine = load_wine()                                    								# 1--> Load Wine Dataset
+type(wine)
+
+x = wine.data
+y = wine.target
+
+x_train, x_test, y_train, y_test=train_test_split(x, y, test_size = 0.3, random_state = 4)          		# 2--> Train_Test_Split                  
+                                           
+uni_acc = {}
+for i in range(3,31):
+  knn = KNeighborsClassifier(n_neighbors = i , weights='uniform')                          # 3--> Object Create
+  knn.fit(x_train, y_train)				# data gula k level gular sathe fit kora                  4--> Training
+  y_pred = knn.predict(x_test)				# 30% data diya 70% trained datar opor prediction         5--> Testing
+  uni_acc[i] = metrics.accuracy_score(y_test, y_pred)			 					# 6--> Accuracy Finding
+
+# print(acc_uni)
+uni_key = list(uni_acc.keys())
+uni_val = list(uni_acc.values())
+uni_pos = uni_val.index(max(uni_val))
+uni_max_key = uni_key[uni_pos]
+uni_max_val = max(uni_val)
+
+dis_acc = {}
+for i in range(3,31):
+  knn = KNeighborsClassifier(n_neighbors = i , weights='distance')                          # 3--> Object Create
+  knn.fit(x_train, y_train)				# data gula k level gular sathe fit kora                  4--> Training
+  y_pred = knn.predict(x_test)				# 30% data diya 70% trained datar opor prediction         5--> Testing
+  dis_acc[i] = metrics.accuracy_score(y_test, y_pred)			 					# 6--> Accuracy Finding
+
+# print(acc_dis)
+dis_key = list(dis_acc.keys())
+dis_val = list(dis_acc.values())
+dis_pos = dis_val.index(max(dis_val))
+dis_max_key = dis_key[dis_pos]
+dis_max_val = max(dis_val)
+
+if uni_max_key == dis_max_key and uni_max_val == dis_max_val:           # jodi duitar e k_valeu and Accuracy same hoy
+    K = uni_max_key
+    print(f"K = {K}\nAccuracy = {uni_max_val}\nWeight = Uniform/Distance")          # j kono ektar k_value print
+elif uni_max_key == dis_max_key:                        # Both K-value's are same but accuracy is different
+    K=uni_max_key           # K = anyone
+    dic = {uni_max_val: "Uniform", dis_max_val: "Distance"}         # different value duita k key kore corrousponding weight er sathe dictionary
+    max_accuracy = max(uni_max_val, dis_max_val)
+    Weight = dic[max_accuracy]
+    print(f"K = {K}\nAccuracy = {max_accuracy}\nWeight = {Weight}")
+
+elif uni_max_val == dis_max_val:                    # if K-value's are different but accuracy is same
+    print(f"K= [{uni_max_key}/{dis_max_key}]\nAccuracy = {uni_max_val}\nWeight = [Uniform/Distance]")
+
+else:           # K-value and Accuracy both are different
+    dic={ uni_max_key : [uni_max_val, "Uniform"], dis_max_key: [dis_max_val, "Distance"] }      # K-Value k key kore accuracy & weight k corrousponding list hisebe dictionary te add
+    max_accuracy = max(uni_max_val, dis_max_val)
+    for i in dic:
+        # print(dic[i][0])
+        if dic[i][0] == max_accuracy:
+            print(f"K = {i}")
+            print(f"Accuracy = {max_accuracy}")
+            print(f"Weight = {dic[i][1]}")

@@ -1,0 +1,334 @@
+# https://colab.research.google.com/drive/1xXE2q67W-61_CcTb52ufXsVgiWSjhaYW?usp=sharing
+
+#Name: Md Al Emran Hossain
+#ID- 011181144
+
+import heapq
+
+# adj_list = {
+#     'S': [['A', 1], ['B', 4]],
+#     'A': [['B', 2], ['C', 5], ['D', 12]],
+#     'B': [['C', 2]],
+#     'C': [['D', 3]],
+#     'D': []
+# }
+#
+# h = {
+#     'S': 7,
+#     'A': 6,
+#     'B': 2,
+#     'C': 1,
+#     'D': 0,
+# }
+
+n, e = input().split()
+
+n = int(n)
+e = int(e)
+
+nodes = input().split()
+
+adj_list = {}
+
+for node in nodes:
+    adj_list[node] = []
+
+for i in range(e):
+    u, v, c = input().split()
+    c = int(c)
+
+    adj_list[u].append([v, c])
+
+# for i in adj_list:
+#     print(f"{i}: {adj_list[i]}")
+
+h = {}
+
+for i in range(n):
+
+    node,h_value = input().split()
+
+    h_value=int(h_value)
+
+    h[node]=h_value
+
+source, destination = input().split()
+
+# parent = {
+#     'S': '',
+#     'A': '',
+#     'B': '',
+#     'C': '',
+#     'D': '',
+# }
+
+parent={}
+
+for node in nodes:
+    parent[node]=''
+
+# as_score = {
+#     'S': -1,
+#     'A': -1,
+#     'B': -1,
+#     'C': -1,
+#     'D': -1
+# }
+
+f_score = {}
+
+for node in nodes:
+    f_score[node] = -1
+
+pq = []
+
+heapq.heappush(pq, [h[source], source])
+
+path = []
+
+while True:
+
+    top = heapq.heappop(pq)
+
+    #print(f"top: [{top[0]}, '{top[1]}']")
+
+    if top[1] == destination:
+        #print("Terminated by 1st terminator")
+
+        node = destination
+
+        while node != '':
+            #print(f"Node is: {node}")
+            path.append(node)
+            node = parent[node]
+        break
+    #print("Not break area")
+    if f_score[top[1]] < top[0] and f_score[top[1]] != -1 :
+        #print(f"Terminated by 2nd terminator: {top[1]} .as_score: {as_score[top[1]]}")
+        continue
+
+    f_score[top[1]] = top[0]
+
+
+    for adj_node in adj_list[top[1]]:
+        #print(f"Adj_node: {adj_node[0]}")
+        if f_score[adj_node[0]] == -1 or f_score[adj_node[0]] > (top[0] - h[top[1]]) + adj_node[1] + h[adj_node[0]]:
+            f_score[adj_node[0]] = (top[0] - h[top[1]]) + adj_node[1] + h[adj_node[0]]
+            #print(f"Pushing:[{adj_node[0]} --> {f_score[adj_node[0]]}] ")
+            heapq.heappush(pq, [f_score[adj_node[0]], adj_node[0]])
+            parent[adj_node[0]] = top[1]
+
+# for i in parent:
+#     print(f"[{i}<--{parent[i]}]")
+
+
+#print(path)
+path.reverse()
+
+print("Path: ", end='')
+
+for i in range(len(path)):
+    print(path[i],end='')
+    if path[i]!=destination:
+        print("-->",end='')
+
+print(f"\nCost: {f_score[destination]}")
+
+
+Admissibility Check:///////////////////////////////////////////////////////////////////////////////////////////////
+
+import sys,heapq
+INF=sys.maxsize
+#INF = sys.maxsize
+# adj_list = {
+#     'S': [['A', 1], ['B', 4]],
+#     'A': [['B', 2], ['C', 5], ['D', 12]],
+#     'B': [['C', 2]],
+#     'C': [['D', 3]],
+#     'D': []
+# }
+#
+# h = {
+#     'S': 7,
+#     'A': 6,
+#     'B': 2,
+#     'C': 1,
+#     'D': 0,
+# }
+
+def minimum(u,destination,visited, adj_list):
+    #print(u)
+    if(u==destination):
+        return 0
+
+    visited[u]=True
+    ans=INF
+    for i in adj_list[u]:
+        #print(i)
+        if visited[i[0]]==False:
+            curr = minimum(i[0], destination, visited, adj_list)
+            #print(f"Curr is: {curr}")
+            #ans=i[1] + curr
+            #if curr < INF:
+                #print(i[1] + curr)
+            #print(f"Answer: {ans}---i is: {i}---{i[1]}---Current: {curr}")
+            ans=min(ans, i[1] + curr)
+
+                #print(f"Ans is: {ans}")
+
+    visited[u]=False
+    #print(ans)
+    return ans
+
+
+if __name__ == "__main__":
+    n, e = input().split()
+
+    n = int(n)
+    e = int(e)
+
+    nodes = input().split()
+
+    adj_list = {}
+
+    for node in nodes:
+        adj_list[node] = []
+
+    for i in range(e):
+        u, v, c = input().split()
+        c = int(c)
+
+        adj_list[u].append([v, c])
+
+    # for i in adj_list:
+    #     print(f"{i}: {adj_list[i]}")
+
+    h = {}
+
+    for i in range(n):
+
+        node,h_value = input().split()
+
+        h_value=int(h_value)
+
+        h[node]=h_value
+
+    source, destination = input().split()
+
+    visited={}
+
+    for node in nodes:
+        visited[node]=False
+
+    for node in nodes:
+
+        visited[node] = True
+    # ans=minimum(source, destination, visited, adj_list)
+    # print(f"Answer: {ans}")
+        #ans = minimum(node, destination, visited, adj_list)
+        #print(ans)
+        if h[node] <= minimum(node, destination, visited, adj_list):
+            print(f"Node: [{node}] is Admissible.")
+        else:
+            print(f"Node: [{node}] is Not Admissible.")
+
+
+            # for i in adj_list[node]:
+            # print(i[1])
+
+
+    #parent = {
+    #     'S': '',
+    #     'A': '',
+    #     'B': '',
+    #     'C': '',
+    #     'D': '',
+    # }
+
+    parent={}
+
+    for node in nodes:
+        parent[node]=''
+
+    # as_score = {
+    #     'S': -1,
+    #     'A': -1,
+    #     'B': -1,
+    #     'C': -1,
+    #     'D': -1
+    # }
+
+    f_score = {}
+
+    for node in nodes:
+        f_score[node] = -1
+
+    pq = []
+
+    heapq.heappush(pq, [h[source], source])
+
+    path = []
+
+    while True:
+
+        top = heapq.heappop(pq)
+
+        #print(f"top: [{top[0]}, '{top[1]}']")
+
+        if top[1] == destination:
+            #print("Terminated by 1st terminator")
+
+            node = destination
+
+            while node != '':
+                #print(f"Node is: {node}")
+                path.append(node)
+                node = parent[node]
+            break
+        #print("Not break area")
+        if f_score[top[1]] < top[0] and f_score[top[1]] != -1 :
+            #print(f"Terminated by 2nd terminator: {top[1]} .f_score: {as_score[top[1]]}")
+            continue
+
+        f_score[top[1]] = top[0]
+
+
+        for adj_node in adj_list[top[1]]:
+            #print(f"Adj_node: {adj_node[0]}")
+            if f_score[adj_node[0]] == -1 or f_score[adj_node[0]] > (top[0] - h[top[1]]) + adj_node[1] + h[adj_node[0]]:
+                f_score[adj_node[0]] = (top[0] - h[top[1]]) + adj_node[1] + h[adj_node[0]]
+                #print(f"Pushing:[{adj_node[0]} --> {f_score[adj_node[0]]}] ")
+                heapq.heappush(pq, [f_score[adj_node[0]], adj_node[0]])
+                parent[adj_node[0]] = top[1]
+
+    # for i in parent:
+    #     print(f"[{i}<--{parent[i]}]")
+
+
+    #print(path)
+    path.reverse()
+
+    print("Path: ", end='')
+
+    for i in range(len(path)):
+        print(path[i],end='')
+        if path[i]!=destination:
+            print("-->",end='')
+
+    print(f"\nCost :{f_score[destination]}")
+#
+# 5 7
+# s a b c d
+# s a 1
+# s b 4
+# a b 2
+# a c 5
+# a d 12
+# b c 2
+# c d 3
+# s 7
+# a 6
+# b 2
+# c 1
+# d 0
+# s d
